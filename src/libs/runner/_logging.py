@@ -35,7 +35,7 @@ class Logging(BaseManager):
             for fold in range(self.n_splits):
                 val_preds = pd.read_csv(osp.join(self.val_preds_path, f"preds_{seed}_{fold}.csv"))
                 cv_df.loc[cv_df["fold"] == fold, cols] = val_preds[cols].values
-            cv_df[cols].to_csv(osp.join(self.val_pred_path, f"oof_preds_{seed}.csv"), index=False) 
+            cv_df[cols].to_csv(osp.join(self.val_preds_path, f"oof_preds_{seed}.csv"), index=False) 
             cv_df["pred"] =  np.argmax(cv_df[cols].values, axis=1)
             cv_score = accuracy_score(cv_df["label"].values, cv_df["pred"].values)
             cv_scores.append(cv_score)
@@ -44,7 +44,7 @@ class Logging(BaseManager):
         preds = np.mean(np.array(preds), axis=0)
         preds = np.argmax(preds, axis=1)
         preds = pd.DataFrame(preds, columns=["pred"])
-        preds.to_csv(osp.join(self.val_pred_path, "oof_preds.csv"), index=False)
+        preds.to_csv(osp.join(self.val_preds_path, "oof_preds.csv"), index=False)
         try:
             cv_score = accuracy_score(train_df["label"], preds["pred"])
         except:

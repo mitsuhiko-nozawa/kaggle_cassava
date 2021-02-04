@@ -1,4 +1,5 @@
 import sys, os
+os.environ["KMP_AFFINITY"] = "disabled"
 import warnings
 warnings.filterwarnings("ignore")
 import hydra

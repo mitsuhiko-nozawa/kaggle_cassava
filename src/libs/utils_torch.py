@@ -67,7 +67,6 @@ def train_fn(model, optimizer, scheduler, loss_fn, dataloader, device):
 
         outputs = model(images)
         loss = loss_fn(outputs, labels)
-        print(loss)
         loss.backward()
         optimizer.step()
 

@@ -4,7 +4,7 @@ exp_param:
   exp_name: None # work dir name
   raw_dirname: cassava-leaf-disease-classification
   
-  debug: True
+  debug: False
   train_flag: True
   infer_flag: True
   log_flag: True
@@ -17,17 +17,17 @@ exp_param:
 
 train_param: 
   model: ResNext50_32x4d
-  batch_size: 4
+  batch_size: 32
   num_workers: 1
-  device: cpu
+  device: cuda:4
   
   tr_transform_params:
     size: 256
   val_transform_params:
     size: 256
 
-  epochs: 1
-  early_stopping_steps: 1
+  epochs: 10
+  early_stopping_steps: 5
   verbose: 1
 
   scheduler: CosineAnnealingWarmRestarts

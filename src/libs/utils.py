@@ -26,5 +26,6 @@ def seed_everything(seed=42):
     torch.cuda.manual_seed(0)
     torch.cuda.manual_seed_all(0)
     if torch.cuda.is_available(): 
+        print("cuda available")
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = True
