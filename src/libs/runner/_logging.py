@@ -13,7 +13,8 @@ class Logging(BaseManager):
     def __call__(self):
         print("Logging")
         if self.get("log_flag"):
-            self.cv_score, self.cv_scores = self.calc_cv()
+            if self.get("calc_cv") and not self.debug: self.cv_score, self.cv_scores = self.calc_cv()
+            if self.get("make_submission"): self.make_submission()
             if self.get("mlflow"):
                 mlflow.set_tracking_uri(osp.join(self.WORK_DIR, "mlruns"))
                 self.create_mlflow()
@@ -21,11 +22,11 @@ class Logging(BaseManager):
     def calc_cv(self):
         preds = []
         cv_scores = []
-        train_df = pd.read_csv(osp.join(self.ROOT, "input", self.raw_dirname, "train.csv"))
+        train_df = pd.read_csv(osp.join(self.data_path, "train.csv"))
         
         for seed in self.seeds:
             # cvを1ファイルずつに変更
-            cv_df = pd.read_csv(osp.join(self.ROOT, "input", "cv", f"{self.cv_type}_{seed}.csv" ))
+            cv_df = pd.read_csv(osp.join(self.ROOT, "src", "cvs", f"{self.cv_type}_{seed}.csv" ))
             #mask = train_y[cv_feat] != -1
             cv_df["pred"] = np.nan
             cols = [f"pred_{n}" for n in range(self.out_size)]
@@ -34,6 +35,7 @@ class Logging(BaseManager):
 
             for fold in range(self.n_splits):
                 val_preds = pd.read_csv(osp.join(self.val_preds_path, f"preds_{seed}_{fold}.csv"))
+                print(val_preds)
                 cv_df.loc[cv_df["fold"] == fold, cols] = val_preds[cols].values
             cv_df[cols].to_csv(osp.join(self.val_preds_path, f"oof_preds_{seed}.csv"), index=False) 
             cv_df["pred"] =  np.argmax(cv_df[cols].values, axis=1)
@@ -53,6 +55,14 @@ class Logging(BaseManager):
             
         print(f"final cv : {cv_score}")
         return cv_score, cv_scores
+
+    def make_submission(self):
+        preds = pd.read_csv( osp.join(self.preds_path, "pred.csv") )
+        sub_df = pd.read_csv(osp.join(self.data_path, "sample_submission.csv"))
+        sub_df["label"] = np.argmax(preds.values, axis=1).copy()
+        sub_df.to_csv(osp.join(self.sub_path, "submission.csv"), index=False)
+
+
 
     def create_mlflow(self):
         with mlflow.start_run():
@@ -75,9 +85,3 @@ class Logging(BaseManager):
 
 
     
-
-    def get(self, key):
-        try:
-            return self.params[key]
-        except:
-            raise ValueError(f"No such value in params, {key}")

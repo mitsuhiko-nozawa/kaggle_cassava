@@ -10,6 +10,7 @@ class BaseManager(metaclass=ABCMeta):
         self.data_path = osp.join(self.ROOT, "input", self.raw_dirname)
         self.val_preds_path = osp.join(self.WORK_DIR, "val_preds")
         self.preds_path = osp.join(self.WORK_DIR, "preds")
+        self.sub_path = self.preds_path
         self.weight_path = osp.join(self.WORK_DIR, "weight")
         self.seeds = params["seeds"]
         self.debug = params["debug"]
@@ -17,9 +18,19 @@ class BaseManager(metaclass=ABCMeta):
         self.out_size = params["output_size"]
         self.n_splits = params["n_splits"]
 
+        self.env = params["env"]
+        if self.env == "kaggle":
+            self.to_kaggleEnv()
+
         if not osp.exists(self.val_preds_path): os.mkdir(self.val_preds_path)
         if not osp.exists(self.weight_path): os.mkdir(self.weight_path)
         if not osp.exists(self.preds_path): os.mkdir(self.preds_path)
+
+    def to_kaggleEnv(self):
+        self.val_preds_path = osp.join("/", "kaggle", "working", "val_preds")
+        self.preds_path = osp.join("/", "kaggle", "working", "preds")
+        self.sub_path = osp.join("/", "kaggle", "working")
+        self.data_path = osp.join("/", "kaggle", "input", self.raw_dirname)
 
     def get(self, key):
         try:

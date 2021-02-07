@@ -1,8 +1,11 @@
+description: ResNext image size 256
+
 exp_param: 
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
   raw_dirname: cassava-leaf-disease-classification
+  env: aic
   
   debug: False
   train_flag: True
@@ -47,3 +50,5 @@ train_param:
 
 log_param:
   mlflow: False
+  calc_cv: True
+  make_submission: True

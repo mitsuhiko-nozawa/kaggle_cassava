@@ -1,4 +1,4 @@
-description: EfficientNet image size 512
+description: Resnext image size 512
 
 exp_param: 
   WORK_DIR: None # */exp_000
@@ -8,8 +8,8 @@ exp_param:
   env: aic
   
   debug: False
-  train_flag: False
-  infer_flag: False
+  train_flag: True
+  infer_flag: True
   log_flag: True
 
   cv: StratifiedKFold
@@ -19,8 +19,7 @@ exp_param:
   seeds: [0]
 
 train_param: 
-  #model: ResNext50_32x4d
-  model: EfficientNet
+  model: ResNext50_32x4d
   batch_size: 16
   num_workers: 1
   device: cuda:2
@@ -52,5 +51,5 @@ train_param:
 
 log_param:
   mlflow: False
-  calc_cv: False
+  calc_cv: True
   make_submission: True

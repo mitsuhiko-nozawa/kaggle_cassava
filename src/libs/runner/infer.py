@@ -22,7 +22,7 @@ class Infer(BaseManager):
         print("Inference")
         if self.get("infer_flag"):
             # test image id from sample_submission.csv
-            test_df = pd.read_csv(osp.join(self.ROOT, "input", self.raw_dirname, "sample_submission.csv"))
+            test_df = pd.read_csv(osp.join(self.data_path, "sample_submission.csv"))
             test_dataset = TestDataset(test_df, self.data_path, get_transforms('valid', self.get("val_transform_params")))
             testloader = DataLoader(test_dataset, batch_size=self.get("batch_size"), num_workers=self.get("num_workers"), shuffle=False, pin_memory=True)
             oof_preds = []
@@ -30,6 +30,7 @@ class Infer(BaseManager):
                 for fold in range(self.get("n_splits")):
                     self.params["seed"] = seed
                     self.params["fold"] = fold
+                    self.params["pretrained"] = False
                     model = eval(self.model)(self.params)
                     model.read_weight()
                     preds = model.predict(testloader)

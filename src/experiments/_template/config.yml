@@ -1,8 +1,11 @@
+description: insert description here
+
 exp_param: 
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
   raw_dirname: cassava-leaf-disease-classification
+  env: aic
   
   debug: False
   train_flag: True
@@ -16,18 +19,20 @@ exp_param:
   seeds: [0]
 
 train_param: 
-  model: ResNext50_32x4d
-  batch_size: 32
+  #model: ResNext50_32x4d
+  model: EfficientNet
+  batch_size: 16
   num_workers: 1
-  device: cuda:4
+  device: cuda:2
+  accum_iter: 2
   
   tr_transform_params:
-    size: 256
+    size: 512
   val_transform_params:
-    size: 256
+    size: 512
 
-  epochs: 10
-  early_stopping_steps: 5
+  epochs: 20
+  early_stopping_steps: 2
   verbose: 1
 
   scheduler: CosineAnnealingWarmRestarts
@@ -47,3 +52,5 @@ train_param:
 
 log_param:
   mlflow: False
+  calc_cv: True
+  make_submission: True

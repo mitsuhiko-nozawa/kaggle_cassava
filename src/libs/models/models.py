@@ -37,7 +37,7 @@ class BaseClassifierModel(BaseModel):
 
     def read_weight(self):
         fname = f"{self.seed}_{self.fold}.pt"
-        self.model.load_state_dict(torch.load( osp.join(self.weight_path, fname) ))
+        self.model.load_state_dict(torch.load( osp.join(self.weight_path, fname) , map_location=self.device), self.device)
 
     def save_weight(self):
         pass
@@ -53,6 +53,7 @@ class BaseClassifierModel(BaseModel):
         self.verbose = self.params["verbose"]
         self.seed = self.params["seed"]
         self.fold = self.params["fold"]
+        self.pretrained = self.params["pretrained"]
 
 
         self.optimizer = self.params["optimizer"]
@@ -60,14 +61,14 @@ class BaseClassifierModel(BaseModel):
     
 
 class ResNext50_32x4d(BaseClassifierModel):
-    def get_model(self):
-        model = CustomResNext(out_size=self.params["output_size"])
+    def get_model(self, pretrained):
+        model = CustomResNext(pretrained=pretrained, out_size=self.params["output_size"])
         model.to(self.device)
         return model
 
 class EfficientNet(BaseClassifierModel):
-    def get_model(self):
-        model = CustomEfficientNet(out_size=self.params["output_size"])
+    def get_model(self, pretrained):
+        model = CustomEfficientNet(pretrained=pretrained, out_size=self.params["output_size"])
         model.to(self.device)
         return model
 

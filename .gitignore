@@ -1,5 +1,9 @@
 # /
 .vscode
+# /input
+input/*
+!input/_set_up.sh
+
 # src/
 
 # src/input
@@ -19,3 +23,4 @@ src/features/test/*
 !**/.gitkeep
 **/*.pt
 **/nohup.out
+**/*.json
