@@ -47,6 +47,6 @@ class TestDataset(Dataset):
         return image
 
 def get_dataloader(train_dataset, val_dataset, batch_size, num_workers):
-    trainloader = DataLoader(train_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=True, pin_memory=True, drop_last=True)
-    validloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=False, pin_memory=True, drop_last=False)
+    trainloader = DataLoader(train_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=True, pin_memory=False, drop_last=False)
+    validloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=False, pin_memory=False, drop_last=False)
     return trainloader, validloader

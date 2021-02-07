@@ -7,7 +7,7 @@ from .manager import BaseManager
 from utils import make_cv, seed_everything
 from utils_torch import get_transforms
 from dataset import TrainDataset, get_dataloader
-from models import ResNext50_32x4d
+from models import ResNext50_32x4d, EfficientNet
 
 
 class Train(BaseManager):

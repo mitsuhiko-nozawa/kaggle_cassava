@@ -13,7 +13,7 @@ class BaseClassifierModel(BaseModel):
     def fit(self, trainloader, validloader):
         optimizer = eval(self.optimizer)(self.model.parameters(), **self.params["optimizer_params"])
         scheduler = eval(self.scheduler)(optimizer, **self.params["scheduler_params"])
-        criterion = nn.CrossEntropyLoss()
+        criterion = nn.CrossEntropyLoss().to(self.device)
 
         self.val_preds = run_training(
             model=self.model,
@@ -47,7 +47,7 @@ class BaseClassifierModel(BaseModel):
         self.WORK_DIR = self.params["WORK_DIR"]
         self.weight_path = osp.join(self.WORK_DIR, "weight")
 
-        self.device = self.params["device"]
+        self.device = torch.device(self.params["device"] if torch.cuda.is_available() else 'cpu')
         self.epochs = self.params["epochs"]
         self.early_stopping_steps = self.params["early_stopping_steps"]
         self.verbose = self.params["verbose"]
@@ -64,5 +64,16 @@ class ResNext50_32x4d(BaseClassifierModel):
         model = CustomResNext(out_size=self.params["output_size"])
         model.to(self.device)
         return model
+
+class EfficientNet(BaseClassifierModel):
+    def get_model(self):
+        model = CustomEfficientNet(out_size=self.params["output_size"])
+        model.to(self.device)
+        return model
+
+#class Resnet_
+
+
+
 
 

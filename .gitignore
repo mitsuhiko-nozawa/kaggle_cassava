@@ -18,3 +18,4 @@ src/features/test/*
 **/*.csv
 !**/.gitkeep
 **/*.pt
+**/nohup.out

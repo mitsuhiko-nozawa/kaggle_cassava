@@ -9,7 +9,7 @@ from .manager import BaseManager
 from utils import make_cv, seed_everything
 from utils_torch import get_transforms
 from dataset import TestDataset
-from models import ResNext50_32x4d
+from models import ResNext50_32x4d, EfficientNet
 
 class Infer(BaseManager):
     def __init__(self, params):

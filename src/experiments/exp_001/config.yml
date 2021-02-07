@@ -1,0 +1,51 @@
+exp_param: 
+  WORK_DIR: None # */exp_000
+  ROOT: None # */src
+  exp_name: None # work dir name
+  raw_dirname: cassava-leaf-disease-classification
+  
+  debug: False
+  train_flag: True
+  infer_flag: True
+  log_flag: True
+
+  cv: StratifiedKFold
+  recreate_cv: False
+  n_splits: 5
+  output_size: 5
+  seeds: [0]
+
+train_param: 
+  #model: ResNext50_32x4d
+  model: EfficientNet
+  batch_size: 16
+  num_workers: 1
+  device: cuda:2
+  accum_iter: 2
+  
+  tr_transform_params:
+    size: 512
+  val_transform_params:
+    size: 512
+
+  epochs: 20
+  early_stopping_steps: 2
+  verbose: 1
+
+  scheduler: CosineAnnealingWarmRestarts
+  scheduler_params:
+    T_0: 10
+    T_mult: 1
+    eta_min: 0.000001
+    last_epoch: -1
+    
+  optimizer: Adam
+  optimizer_params:
+    lr: 0.0001
+    weight_decay: 0.000001
+    amsgrad: False
+  
+
+
+log_param:
+  mlflow: False
