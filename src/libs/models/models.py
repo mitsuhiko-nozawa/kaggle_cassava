@@ -1,30 +1,24 @@
 from .base_model import BaseModel
 from .networks import *
-from .criterions import *
+from .run_utils import run_training, inference_fn
 from utils import seed_everything
-from utils_torch import run_training, inference_fn
-from torch.nn import CrossEntropyLoss
 
 import os.path as osp
 import torch
-import torch.nn as nn
-from torch.optim import Adam, SGD
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, CosineAnnealingLR, ReduceLROnPlateau
 
-class BaseClassifierModel(BaseModel):
+class CassavaClassifierModel(BaseModel):
     def fit(self, trainloader, validloader):
-        optimizer = eval(self.optimizer)(self.model.parameters(), **self.params["optimizer_params"])
-        scheduler = eval(self.scheduler)(optimizer, **self.params["scheduler_params"])
-        criterion = eval(self.params["criterion"])().to(self.device)
-
         self.val_preds = run_training(
             model=self.model,
             trainloader=trainloader,
             validloader=validloader,
             epochs=self.epochs,
-            optimizer=optimizer,
-            scheduler=scheduler,
-            loss_fn=criterion,
+            optimizer=self.optimizer,
+            optimizer_params=self.optimizer_params,
+            scheduler=self.scheduler,
+            scheduler_params=self.scheduler_params,
+            loss_tr=self.loss_tr,
+            loss_fn=self.loss_fn,
             early_stopping_steps=self.early_stopping_steps,
             verbose=self.verbose,
             device=self.device,
@@ -57,28 +51,20 @@ class BaseClassifierModel(BaseModel):
         self.fold = self.params["fold"]
         self.pretrained = self.params["pretrained"]
 
+        self.loss_tr = self.params["loss_tr"]
+        self.loss_fn = self.params["loss_fn"]
 
         self.optimizer = self.params["optimizer"]
+        self.optimizer_params = self.params["optimizer_params"]
         self.scheduler = self.params["scheduler"]
+        self.scheduler_params = self.params["scheduler_params"]
+
+    def get_model(self, model_name):
+        model = eval(model_name)(pretrained=self.pretrained, out_size=self.params["output_size"])
+        model.to(self.device)
+        return model
     
 
-class ResNext50_32x4d(BaseClassifierModel):
-    def get_model(self, pretrained):
-        model = CustomResNext(pretrained=pretrained, out_size=self.params["output_size"])
-        model.to(self.device)
-        return model
-
-class EfficientNet(BaseClassifierModel):
-    def get_model(self, pretrained):
-        model = CustomEfficientNet(pretrained=pretrained, out_size=self.params["output_size"])
-        model.to(self.device)
-        return model
-
-class seresnext50_32x4d(BaseClassifierModel):
-    def get_model(self, pretrained):
-        model = CustomSEResNext(pretrained=pretrained, out_size=self.params["output_size"])
-        model.to(self.device)
-        return model
 
 
 

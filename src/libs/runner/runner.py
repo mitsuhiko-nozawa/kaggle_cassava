@@ -17,6 +17,7 @@ class Runner():
         self.log_param = param["log_param"]
         self.train_param.update(self.exp_param)
         self.log_param.update(self.exp_param)
+        self.log_param.update(self.train_param)
 
     def __call__(self):
         Trainer = Train(self.train_param)

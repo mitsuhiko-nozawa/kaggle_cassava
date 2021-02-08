@@ -7,7 +7,7 @@ exp_param:
   raw_dirname: cassava-leaf-disease-classification
   env: aic
   
-  debug: False
+  debug: True
   train_flag: True
   infer_flag: True
   log_flag: True
@@ -35,6 +35,8 @@ train_param:
   epochs: 20
   early_stopping_steps: 2
   verbose: 1
+  loss_tr: CrossEntropyLoss
+  loss_fn: CrossEntropyLoss
 
   scheduler: CosineAnnealingWarmRestarts
   scheduler_params:

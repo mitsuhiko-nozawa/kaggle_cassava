@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+
+
 class TaylorSoftmax(nn.Module):
     '''
     This is the autograd version

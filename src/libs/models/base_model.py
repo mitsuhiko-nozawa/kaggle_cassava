@@ -9,7 +9,7 @@ class BaseModel(metaclass=ABCMeta):
     def __init__(self, params=None):
         self.params = params
         self.perse_params()
-        self.model = self.get_model(self.pretrained)
+        self.model = self.get_model(self.params["model"])
 
     
     @abstractmethod

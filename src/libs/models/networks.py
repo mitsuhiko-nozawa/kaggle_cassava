@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
-import torchvision
 import timm
 
-class CustomResNext(nn.Module):
+class ResNext50_32x4d(nn.Module):
     def __init__(self, model_name='resnext50_32x4d', pretrained=False, out_size=5):
         super().__init__()
         self.model = timm.create_model(model_name, pretrained=pretrained)
@@ -15,7 +14,7 @@ class CustomResNext(nn.Module):
         return x
 
 
-class CustomEfficientNet(nn.Module):
+class EfficientNet(nn.Module):
     def __init__(self, model_name='tf_efficientnet_b4_ns', pretrained=False, out_size=5):
         super().__init__()
         self.model = timm.create_model(model_name, pretrained=pretrained)
@@ -26,7 +25,7 @@ class CustomEfficientNet(nn.Module):
         x = self.model(x)
         return x
 
-class CustomSEResNext(nn.Module):
+class seresnext50_32x4d(nn.Module):
     def __init__(self, model_name='seresnext50_32x4d', pretrained=False, out_size=5):
         super().__init__()
         self.model = timm.create_model(model_name, pretrained=pretrained, num_classes=out_size)

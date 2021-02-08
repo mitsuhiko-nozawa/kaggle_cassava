@@ -1,4 +1,4 @@
-description: EfficientNet image size 512, light augs
+description: EfficientNet image size 512, light augs, need debug config
 
 exp_param: 
   WORK_DIR: None # */exp_000

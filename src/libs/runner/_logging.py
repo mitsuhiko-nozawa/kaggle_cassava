@@ -6,11 +6,7 @@ from sklearn.metrics import accuracy_score
 from .manager import BaseManager
 
 
-
 class Logging(BaseManager):
-    def __init__(self, params):
-        super(Logging, self).__init__(params)
-
     def __call__(self):
         print("Logging")
         if self.get("log_flag"):

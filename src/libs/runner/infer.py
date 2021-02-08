@@ -1,23 +1,15 @@
-import sys, os
+import os
 import os.path as osp
 import numpy as np
 import pandas as pd
-import torch
 from torch.utils.data import DataLoader
 
 from .manager import BaseManager
-from utils import make_cv, seed_everything
-from utils_torch import get_transforms
-from dataset import TestDataset
-from models import *
+from utils import seed_everything
+from dataset import TestDataset, get_transforms
+from models import CassavaClassifierModel
 
 class Infer(BaseManager):
-    def __init__(self, params):
-        super(Infer, self).__init__(params)
-        self.device = torch.device(params["device"] if torch.cuda.is_available() else "cpu")
-        self.model = params["model"]
-
-        
     def __call__(self):
         print("Inference")
         if self.get("infer_flag"):
@@ -36,7 +28,7 @@ class Infer(BaseManager):
                     self.params["seed"] = seed
                     self.params["fold"] = fold
                     self.params["pretrained"] = False
-                    model = eval(self.model)(self.params)
+                    model = CassavaClassifierModel(self.params)
                     model.read_weight()
                     preds = model.predict(testloader)
                     pd.DataFrame(preds, columns=[f"pred_{n}" for n in range(self.params["output_size"])]).to_csv(osp.join(self.preds_path, f"pred_{seed}_{fold}.csv"), index=False)

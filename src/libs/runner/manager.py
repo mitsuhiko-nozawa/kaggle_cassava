@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import os
 import os.path as osp
+
+
 class BaseManager(metaclass=ABCMeta):
     def __init__(self, params):
         self.params = params
@@ -13,11 +15,14 @@ class BaseManager(metaclass=ABCMeta):
         self.preds_path = osp.join(self.WORK_DIR, "preds")
         self.sub_path = self.preds_path
         self.weight_path = osp.join(self.WORK_DIR, "weight")
+
         self.seeds = params["seeds"]
         self.debug = params["debug"]
         self.cv_type = params["cv"]
         self.out_size = params["output_size"]
         self.n_splits = params["n_splits"]
+        self.device = params["device"]
+        self.model = params["model"]
 
         self.env = params["env"]
         if self.env == "kaggle":
