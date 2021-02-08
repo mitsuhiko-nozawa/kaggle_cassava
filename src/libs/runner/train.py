@@ -7,7 +7,7 @@ from .manager import BaseManager
 from utils import make_cv, seed_everything
 from utils_torch import get_transforms
 from dataset import TrainDataset, get_dataloader
-from models import ResNext50_32x4d, EfficientNet
+from models import *
 
 
 class Train(BaseManager):
@@ -31,8 +31,9 @@ class Train(BaseManager):
         if self.get("train_flag"):
             for seed in self.seeds: # train by seed
                 seed_everything(seed)
-                cv_df = pd.read_csv(osp.join(self.ROOT, "src",  "cvs", f"{self.get('cv')}_{seed}.csv"))
-                for fold in range(self.get("n_splits")): # train by fold
+                cv_df = pd.read_csv(osp.join(self.cv_path, f"{self.get('cv')}_{seed}.csv"))
+                for fold in self.get("run_folds"):
+                #for fold in range(self.get("n_splits")): # train by fold
                     train_df = cv_df[(cv_df["fold"] != fold) & (cv_df["fold"] != -1)]
                     val_df = cv_df[cv_df["fold"] == fold]
                     self.train(train_df, val_df, seed, fold)

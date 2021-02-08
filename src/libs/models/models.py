@@ -72,7 +72,11 @@ class EfficientNet(BaseClassifierModel):
         model.to(self.device)
         return model
 
-#class Resnet_
+class seresnext50_32x4d(BaseClassifierModel):
+    def get_model(self, pretrained):
+        model = CustomSEResNext(pretrained=pretrained, out_size=self.params["output_size"])
+        model.to(self.device)
+        return model
 
 
 

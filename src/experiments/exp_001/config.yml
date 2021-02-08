@@ -17,6 +17,7 @@ exp_param:
   n_splits: 5
   output_size: 5
   seeds: [0]
+  run_folds: [0, 1, 2, 3, 4]
 
 train_param: 
   #model: ResNext50_32x4d
@@ -51,6 +52,7 @@ train_param:
 
 
 log_param:
+  submission_name: submission.csv
   mlflow: False
   calc_cv: False
   make_submission: True

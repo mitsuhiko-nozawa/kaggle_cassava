@@ -114,12 +114,12 @@ def valid_fn(model, loss_fn, dataloader, device):
 def inference_fn(model, dataloader, device):
     model.eval()
     preds = []
-    for images in dataloader:
-        images = images.to(device)
-        outputs = model(images)
-        with torch.no_grad():
+    pbar = tqdm(enumerate(dataloader), total=len(dataloader))
+    with torch.no_grad():
+        for i, (images) in pbar:
+            images = images.to(device)
             outputs = model(images)
-        preds.append(outputs.softmax(1).detach().cpu().numpy())
+            preds.append(outputs.softmax(1).detach().cpu().numpy())
         
     preds = np.concatenate(preds)
     

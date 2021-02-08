@@ -8,6 +8,7 @@ class BaseManager(metaclass=ABCMeta):
         self.WORK_DIR = params["WORK_DIR"]
         self.raw_dirname = params["raw_dirname"] # cassava-leaf-disease-classification
         self.data_path = osp.join(self.ROOT, "input", self.raw_dirname)
+        self.cv_path = osp.join(self.ROOT, "src", "cvs")
         self.val_preds_path = osp.join(self.WORK_DIR, "val_preds")
         self.preds_path = osp.join(self.WORK_DIR, "preds")
         self.sub_path = self.preds_path
@@ -31,6 +32,7 @@ class BaseManager(metaclass=ABCMeta):
         self.preds_path = osp.join("/", "kaggle", "working", "preds")
         self.sub_path = osp.join("/", "kaggle", "working")
         self.data_path = osp.join("/", "kaggle", "input", self.raw_dirname)
+        self.cv_path = osp.join(self.ROOT, "cvs")
 
     def get(self, key):
         try:

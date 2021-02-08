@@ -9,7 +9,7 @@ from .manager import BaseManager
 from utils import make_cv, seed_everything
 from utils_torch import get_transforms
 from dataset import TestDataset
-from models import ResNext50_32x4d, EfficientNet
+from models import *
 
 class Infer(BaseManager):
     def __init__(self, params):
@@ -21,10 +21,15 @@ class Infer(BaseManager):
     def __call__(self):
         print("Inference")
         if self.get("infer_flag"):
-            # test image id from sample_submission.csv
-            test_df = pd.read_csv(osp.join(self.data_path, "sample_submission.csv"))
+            test_df = pd.DataFrame()
+            test_df["image_id"] = list(os.listdir(osp.join(self.data_path, "test_images")))
+            if test_df.shape[0] == 1:
+                for i in range(7):
+                    test_df = test_df.append(test_df)
+                test_df = test_df.reset_index(drop=True)
+
             test_dataset = TestDataset(test_df, self.data_path, get_transforms('valid', self.get("val_transform_params")))
-            testloader = DataLoader(test_dataset, batch_size=self.get("batch_size"), num_workers=self.get("num_workers"), shuffle=False, pin_memory=True)
+            testloader = DataLoader(test_dataset, batch_size=self.get("batch_size"), num_workers=self.get("num_workers"), shuffle=False, pin_memory=False)
             oof_preds = []
             for seed in self.seeds:
                 for fold in range(self.get("n_splits")):

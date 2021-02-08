@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os
 import os.path as osp
 from sklearn.metrics import accuracy_score
 from .manager import BaseManager
@@ -35,7 +36,6 @@ class Logging(BaseManager):
 
             for fold in range(self.n_splits):
                 val_preds = pd.read_csv(osp.join(self.val_preds_path, f"preds_{seed}_{fold}.csv"))
-                print(val_preds)
                 cv_df.loc[cv_df["fold"] == fold, cols] = val_preds[cols].values
             cv_df[cols].to_csv(osp.join(self.val_preds_path, f"oof_preds_{seed}.csv"), index=False) 
             cv_df["pred"] =  np.argmax(cv_df[cols].values, axis=1)
@@ -58,9 +58,14 @@ class Logging(BaseManager):
 
     def make_submission(self):
         preds = pd.read_csv( osp.join(self.preds_path, "pred.csv") )
-        sub_df = pd.read_csv(osp.join(self.data_path, "sample_submission.csv"))
-        sub_df["label"] = np.argmax(preds.values, axis=1).copy()
-        sub_df.to_csv(osp.join(self.sub_path, "submission.csv"), index=False)
+        test_df = pd.DataFrame()
+        test_df["image_id"] = list(os.listdir(osp.join(self.data_path, "test_images")))
+        if test_df.shape[0] == 1:
+            for i in range(7):
+                test_df = test_df.append(test_df)
+            test_df = test_df.reset_index(drop=True)
+        test_df["label"] = np.argmax(preds.values, axis=1).copy()
+        test_df.to_csv(osp.join(self.sub_path, self.get("submission_name")), index=False)
 
 
 

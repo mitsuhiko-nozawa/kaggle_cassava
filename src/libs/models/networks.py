@@ -26,3 +26,14 @@ class CustomEfficientNet(nn.Module):
     def forward(self, x):
         x = self.model(x)
         return x
+
+class CustomSEResNext(nn.Module):
+    def __init__(self, model_name='seresnext50_32x4d', pretrained=False, out_size=5):
+        super().__init__()
+        self.model = timm.create_model(model_name, pretrained=pretrained, num_classes=out_size)
+        #n_features = self.model.classifier.in_features
+        #self.model.classifier = nn.Linear(n_features, out_size)
+
+    def forward(self, x):
+        x = self.model(x)
+        return x
