@@ -24,7 +24,7 @@ train_param:
   model: EfficientNet
   batch_size: 16
   num_workers: 1
-  device: cuda:3
+  device: cuda:0
   accum_iter: 2
   tr_transforms:
     #- Resize(params["size"], params["size"])
@@ -48,8 +48,8 @@ train_param:
   epochs: 20
   early_stopping_steps: 2
   verbose: 1
-  loss_tr: CrossEntropyLoss
-  loss_fn: CrossEntropyLoss
+  loss_tr: FocalCosineLoss
+  loss_fn: FocalCosineLoss
 
   scheduler: CosineAnnealingWarmRestarts
   scheduler_params:
