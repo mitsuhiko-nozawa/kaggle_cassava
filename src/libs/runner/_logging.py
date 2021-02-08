@@ -37,11 +37,14 @@ class Logging(BaseManager):
             for fold in range(self.n_splits):
                 val_preds = pd.read_csv(osp.join(self.val_preds_path, f"preds_{seed}_{fold}.csv"))
                 cv_df.loc[cv_df["fold"] == fold, cols] = val_preds[cols].values
+                cv_df.loc[cv_df["fold"] == fold, "pred"] =  np.argmax(cv_df[cv_df["fold"] == fold][cols].values, axis=1)
+                fold_cv_score = accuracy_score(cv_df.loc[cv_df["fold"] == fold, "label"].values, cv_df.loc[cv_df["fold"] == fold, "pred"].values)
+                print(f"fold {fold} | cv : {fold_cv_score}")
             cv_df[cols].to_csv(osp.join(self.val_preds_path, f"oof_preds_{seed}.csv"), index=False) 
-            cv_df["pred"] =  np.argmax(cv_df[cols].values, axis=1)
+            
             cv_score = accuracy_score(cv_df["label"].values, cv_df["pred"].values)
             cv_scores.append(cv_score)
-            print(f"seed {seed}, cv : {cv_score}")
+            print(f"seed {seed} | cv : {cv_score}")
             preds.append(cv_df[cols].values.copy()) # copy!!!!!
         preds = np.mean(np.array(preds), axis=0)
         preds = np.argmax(preds, axis=1)

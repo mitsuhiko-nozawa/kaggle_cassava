@@ -77,7 +77,7 @@ def train_fn(model, optimizer, scheduler, loss_fn, dataloader, device, scaler):
             scaler.update()
             optimizer.zero_grad() 
         if i % 50 == 0: 
-            description = f"iteration {i} | time {time.time() - s:.4f} | avg loss {final_loss / (i+1):.16f}"
+            description = f"train | iteration {i} | time {time.time() - s:.4f} | avg loss {final_loss / (i+1):.6f}"
             pbar.set_description(description)
     
     final_loss /= len(dataloader)
@@ -101,7 +101,7 @@ def valid_fn(model, loss_fn, dataloader, device):
             final_loss += loss.item()
             valid_preds.append(outputs.softmax(1).detach().cpu().numpy())
             if i % 10 == 0: 
-                description = f"iteration {i} | time {time.time() - s:.4f} | avg loss {final_loss / (i+1):.16f}"
+                description = f"valid | iteration {i} | time {time.time() - s:.4f} | avg loss {final_loss / (i+1):.6f}"
                 pbar.set_description(description)
 
         
@@ -134,14 +134,14 @@ def get_transforms(data, params):
             Transpose(p=0.5),
             HorizontalFlip(p=0.5),
             VerticalFlip(p=0.5),
-            ShiftScaleRotate(p=0.5),
-            HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
-            RandomBrightnessContrast(brightness_limit=(-0.1,0.1), contrast_limit=(-0.1, 0.1), p=0.5),
+            #ShiftScaleRotate(p=0.5),
+            #HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
+            #RandomBrightnessContrast(brightness_limit=(-0.1,0.1), contrast_limit=(-0.1, 0.1), p=0.5),
             Normalize(
                 mean=[0.485, 0.456, 0.406],
                 std=[0.229, 0.224, 0.225],
             ),
-            CoarseDropout(p=0.5),
+            #CoarseDropout(p=0.5),
             Cutout(p=0.5),
             ToTensorV2(),
         ])

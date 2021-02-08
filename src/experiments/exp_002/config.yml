@@ -8,8 +8,8 @@ exp_param:
   env: aic
   
   debug: False
-  train_flag: True
-  infer_flag: True
+  train_flag: False
+  infer_flag: False
   log_flag: True
 
   cv: StratifiedKFold
@@ -17,7 +17,7 @@ exp_param:
   n_splits: 5
   output_size: 5
   seeds: [0]
-  run_folds: [3]
+  run_folds: [0, 1, 2, 3, 4]
 
 train_param: 
   model: ResNext50_32x4d

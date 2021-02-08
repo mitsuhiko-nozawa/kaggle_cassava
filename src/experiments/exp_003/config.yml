@@ -8,8 +8,8 @@ exp_param:
   env: aic
   
   debug: False
-  train_flag: True
-  infer_flag: True
+  train_flag: False
+  infer_flag: False
   log_flag: True
 
   cv: StratifiedKFold

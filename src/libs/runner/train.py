@@ -24,7 +24,7 @@ class Train(BaseManager):
             make_cv(
                 train_df=pd.read_csv(osp.join(self.ROOT, "input", self.raw_dirname, "train.csv")),
                 cv_type=self.get("cv"),
-                out_path=osp.join(self.ROOT, "input", "cv"),
+                out_path=osp.join(self.ROOT, "src", "cvs"),
                 n_splits=self.get("n_splits"),
                 seeds=self.get("seeds"),
             )

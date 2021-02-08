@@ -1,6 +1,6 @@
 dnum=$(ls -l | wc -l)
 dnum=$(($dnum - 3))
-dnum=${dnum//[[:blank:]]}
+#dnum=${dnum//[[:blank:]]}
 dsize=${#dnum}
 
 if [ $dsize = 1 ]; then

@@ -1,18 +1,7 @@
-Training
-[2021-02-04 05:34:04,048][numexpr.utils][INFO] - NumExpr defaulting to 2 threads.
-Using cache found in /home/ubuntu/.cache/torch/hub/pytorch_vision_v0.6.0
-EPOCH: 0, train_loss: 0.5951227159814888, valid_loss: 0.4968761593770625, time: 290.34488892555237
-training until max epoch 1,  : best itaration is 0, valid loss is 0.4968761593770625, time: 290.5817222595215
-Using cache found in /home/ubuntu/.cache/torch/hub/pytorch_vision_v0.6.0
-EPOCH: 0, train_loss: 0.5998813549286863, valid_loss: 0.4877553687834028, time: 292.28927659988403
-training until max epoch 1,  : best itaration is 0, valid loss is 0.4877553687834028, time: 292.53679370880127
-Using cache found in /home/ubuntu/.cache/torch/hub/pytorch_vision_v0.6.0
-EPOCH: 0, train_loss: 0.585095000373067, valid_loss: 0.4902975633740425, time: 288.3526282310486
-training until max epoch 1,  : best itaration is 0, valid loss is 0.4902975633740425, time: 288.57313442230225
-Using cache found in /home/ubuntu/.cache/torch/hub/pytorch_vision_v0.6.0
-EPOCH: 0, train_loss: 0.5946359773644347, valid_loss: 0.5810590828977414, time: 295.6162598133087
-training until max epoch 1,  : best itaration is 0, valid loss is 0.5810590828977414, time: 295.88477301597595
-Using cache found in /home/ubuntu/.cache/torch/hub/pytorch_vision_v0.6.0
-EPOCH: 0, train_loss: 0.5956514618090922, valid_loss: 0.546480238993666, time: 307.381662607193
-training until max epoch 1,  : best itaration is 0, valid loss is 0.546480238993666, time: 307.62237906455994
-
+fold 0 | cv : 0.888785046728972
+fold 1 | cv : 0.8911214953271028
+fold 2 | cv : 0.8787099789670484
+fold 3 | cv : 0.8700630988548727
+fold 4 | cv : 0.8873568590792241
+seed 0 | cv : 0.8832079263448147
+final cv : 0.8832079263448147

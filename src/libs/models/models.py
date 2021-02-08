@@ -1,7 +1,9 @@
 from .base_model import BaseModel
 from .networks import *
+from .criterions import *
 from utils import seed_everything
 from utils_torch import run_training, inference_fn
+from torch.nn import CrossEntropyLoss
 
 import os.path as osp
 import torch
@@ -13,7 +15,7 @@ class BaseClassifierModel(BaseModel):
     def fit(self, trainloader, validloader):
         optimizer = eval(self.optimizer)(self.model.parameters(), **self.params["optimizer_params"])
         scheduler = eval(self.scheduler)(optimizer, **self.params["scheduler_params"])
-        criterion = nn.CrossEntropyLoss().to(self.device)
+        criterion = eval(self.params["criterion"])().to(self.device)
 
         self.val_preds = run_training(
             model=self.model,

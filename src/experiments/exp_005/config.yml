@@ -1,4 +1,4 @@
-description: EfficientNet image size 512
+description: insert description here
 
 exp_param: 
   WORK_DIR: None # */exp_000
@@ -7,9 +7,9 @@ exp_param:
   raw_dirname: cassava-leaf-disease-classification
   env: aic
   
-  debug: False
-  train_flag: False
-  infer_flag: False
+  debug: True
+  train_flag: True
+  infer_flag: True
   log_flag: True
 
   cv: StratifiedKFold
