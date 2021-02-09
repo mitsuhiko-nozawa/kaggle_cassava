@@ -24,7 +24,9 @@ class CassavaClassifierModel(BaseModel):
             device=self.device,
             seed=self.seed,
             fold=self.fold,
-            weight_path=self.weight_path
+            weight_path=self.weight_path,
+            do_cutmix=self.params["do_cutmix"],
+            do_fmix=self.params["do_fmix"]
         )
         
     def predict(self, testloader):

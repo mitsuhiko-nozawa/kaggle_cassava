@@ -1,4 +1,4 @@
-description: insert description here
+description: EfficientNet BiTemperedLogisticLoss
 
 exp_param: 
   WORK_DIR: None # */exp_000
@@ -7,7 +7,7 @@ exp_param:
   raw_dirname: cassava-leaf-disease-classification
   env: aic
   
-  debug: True
+  debug: False
   train_flag: True
   infer_flag: True
   log_flag: True
@@ -20,23 +20,35 @@ exp_param:
   run_folds: [0, 1, 2, 3, 4]
 
 train_param: 
-  #model: ResNext50_32x4d
   model: EfficientNet
   batch_size: 16
   num_workers: 1
-  device: cuda:2
+  device: cuda:0
   accum_iter: 2
-  
+  tr_transforms:
+    #- Resize(params["size"], params["size"])
+    - RandomResizedCrop
+    - Transpose
+    - HorizontalFlip
+    - VerticalFlip
+    #- ShiftScaleRotate
+    #- HueSaturationValue
+    #- RandomBrightnessContrast
+    - Normalize
+    #- CoarseDropout(
+    - Cutout
+    - ToTensorV2
+
   tr_transform_params:
     size: 512
   val_transform_params:
     size: 512
 
   epochs: 20
-  early_stopping_steps: 2
+  early_stopping_steps: 3
   verbose: 1
-  loss_tr: CrossEntropyLoss
-  loss_fn: CrossEntropyLoss
+  loss_tr: BiTemperedLogisticLoss
+  loss_fn: BiTemperedLogisticLoss
 
   scheduler: CosineAnnealingWarmRestarts
   scheduler_params:
@@ -50,6 +62,9 @@ train_param:
     lr: 0.0001
     weight_decay: 0.000001
     amsgrad: False
+
+  do_cutmix: False
+  do_fmix: False
   
 
 

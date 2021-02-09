@@ -31,8 +31,8 @@ class Train(BaseManager):
 
     def train(self, train_df, val_df, seed, fold):
         if self.debug:
-            train_df = train_df[:4]
-            val_df = val_df[:4]
+            train_df = train_df[:self.get("batch_size")+1]
+            val_df = val_df[:self.get("batch_size")+1]
             self.params["epochs"] = 1
         train_dataset = TrainDataset(train_df, self.data_path, get_transforms('train', self.get("tr_transform_params"), self.get("tr_transforms")))
         val_dataset = TrainDataset(val_df, self.data_path, get_transforms('valid', self.get("val_transform_params")))

@@ -4,16 +4,17 @@ from tqdm import tqdm
 import numpy as np
 
 import torch
-from torch.nn import CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
 from torch.optim import SGD, Adam
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, CosineAnnealingLR, ReduceLROnPlateau
 from torch.cuda.amp import autocast, GradScaler
 
 from .criterions import *
+from .mixup import *
 
 
 def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_params, scheduler, \
-    scheduler_params, loss_tr, loss_fn, early_stopping_steps, verbose, device, seed, fold, weight_path):
+    scheduler_params, loss_tr, loss_fn, early_stopping_steps, verbose, device, seed, fold, weight_path, do_cutmix, do_fmix):
 
     loss_tr = eval(loss_tr)()
     loss_fn = eval(loss_fn)()
@@ -27,7 +28,7 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
     scaler = GradScaler() ## 
     start = time.time()
     for epoch in range(epochs):
-        train_loss = train_fn(model, optimizer, scheduler, loss_fn, trainloader, device, scaler, epoch)
+        train_loss = train_fn(model, optimizer, scheduler, loss_fn, trainloader, device, scaler, epoch, do_cutmix, do_fmix)
         valid_loss, val_preds = valid_fn(model, loss_fn, validloader, device, epoch)
 
         # scheduler step
@@ -56,15 +57,35 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
     print(f"training until max epoch {epochs},  : best itaration is {best_epoch}, valid loss is {best_loss}, time: {t}")
     return best_val_preds
 
-def train_fn(model, optimizer, scheduler, loss_fn, dataloader, device, scaler, epoch):
+def train_fn(model, optimizer, scheduler, loss_fn, dataloader, device, scaler, epoch, do_cutmix, do_fmix):
     model.train()
     final_loss = 0
     s = time.time()
     pbar = tqdm(enumerate(dataloader), total=len(dataloader))
     for i, (images, labels) in pbar:
-        images = images.to(device).float()
-        labels = labels.to(device).long()
+        ### mix up 
+        p = np.random.uniform(0, 1)
+        if do_cutmix and do_fmix: 
+            if p < 0.25: # cutmix
+                images, labels = cutmix(images, labels, alpha=1.)
+            elif p < 0.5: # fmix
+                img_size = (images.size(2), images.size(3))
+                images, labels = fmix(images, labels, alpha=1., decay_power=3., shape=img_size)
+            else :
+                eyes = torch.eye(5)
+                labels = eyes[labels]
+
+        elif do_cutmix and p < 0.5: # cutmix
+            images, labels = cutmix(images, labels, alpha=1.)
+
+        else :
+            eyes = torch.eye(5)
+            labels = eyes[labels]
+        ########
         
+        images = images.to(device).float()
+        labels = labels.to(device).float()
+
         with autocast():
             outputs = model(images) # これをautocastから外すと実験結果が固定されるけど、メモリが増える、512でやるときは必須
             loss = loss_fn(outputs, labels)
@@ -92,6 +113,10 @@ def valid_fn(model, loss_fn, dataloader, device, epoch):
     
     with torch.no_grad():
         for i, (images, labels) in pbar:
+            ### to onehot
+            eyes = torch.eye(5)
+            labels = eyes[labels]
+            ###
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)
