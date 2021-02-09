@@ -13,7 +13,8 @@ class Logging(BaseManager):
             if self.get("calc_cv") and not self.debug: self.cv_score, self.cv_scores = self.calc_cv()
             if self.get("make_submission"): self.make_submission()
             if self.get("mlflow"):
-                mlflow.set_tracking_uri(osp.join(self.WORK_DIR, "mlruns"))
+                import mlflow
+                mlflow.set_tracking_uri(osp.join(self.ROOT, "src",  "mlflow", "mlruns"))
                 self.create_mlflow()
 
     def calc_cv(self):
@@ -69,23 +70,19 @@ class Logging(BaseManager):
 
 
     def create_mlflow(self):
-        with mlflow.start_run():
-            mlflow.log_param("exp_name", self.exp_name)
-            mlflow.log_param("model_param", self.model_param)
-            mlflow.log_param("features", self.feats)
-            mlflow.log_param("seeds", self.seeds)
-            mlflow.log_param("nfolds", self.nfolds)
-            mlflow.log_param("cv_type", self.cv)
+        with mlflow.start_run(run_name=self.get("exp_name")):
+            mlflow.log_param("description", self.get("description"))
+            mlflow.log_param("model", self.get("model"))
             mlflow.log_param("cv_scores", self.cv_scores)
-
             mlflow.log_metric("cv_score", self.cv_score)
-            #log_metric("cv_scores", self.cv_scores)
+            mlflow.log_param("image size", self.get("tr_transform_params")["size"])
+            mlflow.log_param("seeds", self.get("seeds"))
 
-            try:
-                mlflow.log_artifact(self.feature_importances_fname)
-            except:
-                pass
-            mlflow.log_artifact(self.submission_fname)
+            #try:
+            #    mlflow.log_artifact(self.feature_importances_fname)
+            #except:
+            #    pass
+            #mlflow.log_artifact(self.submission_fname)
 
 
     

@@ -1,6 +1,5 @@
-description: EfficientNet image size 512, light augs
-
 exp_param: 
+  description: EfficientNet image size 512, light augs
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -9,7 +8,7 @@ exp_param:
   
   debug: False
   train_flag: False
-  infer_flag: True
+  infer_flag: False
   log_flag: True
 
   cv: StratifiedKFold
@@ -20,7 +19,6 @@ exp_param:
   run_folds: [0, 1, 2, 3, 4]
 
 train_param: 
-  #model: ResNext50_32x4d
   model: EfficientNet
   batch_size: 16
   num_workers: 1
@@ -64,10 +62,11 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
   
-
+  do_cutmix: False
+  do_fmix: False
 
 log_param:
   submission_name: submission.csv
-  mlflow: False
+  mlflow: True
   calc_cv: True
-  make_submission: TrueNone # */exp_000
+  make_submission: True 

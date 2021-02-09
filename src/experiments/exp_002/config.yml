@@ -1,6 +1,5 @@
-description: Resnext image size 512
-
 exp_param: 
+  description: Resnext image size 512
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name

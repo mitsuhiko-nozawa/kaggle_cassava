@@ -1,6 +1,5 @@
-description: EfficientNet BCEWithLogitsLoss, cutmix
-
 exp_param: 
+  description: EfficientNet BCEWithLogitsLoss, cutmix
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -21,7 +20,7 @@ exp_param:
 
 train_param: 
   model: EfficientNet
-  batch_size: 8
+  batch_size: 16
   num_workers: 1
   device: cuda:2
   accum_iter: 2

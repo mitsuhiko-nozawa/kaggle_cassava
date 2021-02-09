@@ -1,6 +1,5 @@
-description: efficient net focal cosine loss
-
 exp_param: 
+  description: efficient net focal cosine loss, light aug
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -8,8 +7,8 @@ exp_param:
   env: aic
   
   debug: False
-  train_flag: True
-  infer_flag: True
+  train_flag: False
+  infer_flag: False
   log_flag: True
 
   cv: StratifiedKFold
@@ -63,10 +62,11 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
   
-
+  do_cutmix: False
+  do_fmix: False
 
 log_param:
   submission_name: submission.csv
-  mlflow: False
+  mlflow: True
   calc_cv: True
   make_submission: True

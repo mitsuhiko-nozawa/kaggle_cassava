@@ -1,6 +1,5 @@
-description: EfficientNet BiTemperedLogisticLoss
-
 exp_param: 
+  description: EfficientNet BiTemperedLogisticLoss
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -63,7 +62,8 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
   
-
+  do_cutmix: False
+  do_fmix: False
 
 log_param:
   submission_name: submission.csv

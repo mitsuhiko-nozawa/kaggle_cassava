@@ -1,0 +1,15 @@
+artifact_uri: /home/ubuntu/kaggle/kaggle_cassava/src/mlflow/mlruns/0/7c4fd04bc0634efb8036eba2af389c9f/artifacts
+end_time: 1612871332490
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 7c4fd04bc0634efb8036eba2af389c9f
+run_uuid: 7c4fd04bc0634efb8036eba2af389c9f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1612871332445
+status: 3
+tags: []
+user_id: ubuntu
