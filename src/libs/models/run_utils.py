@@ -24,7 +24,7 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
 
     early_step = 0
     best_loss = np.inf
-    best_acc = 0
+    best_acc = -1
     best_epoch = 0
     best_val_preds = -1
     scaler = GradScaler() ## 

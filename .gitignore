@@ -25,3 +25,4 @@ src/features/test/*
 **/nohup.out
 **/*.json
 **/*.png
+**/*.ipynb

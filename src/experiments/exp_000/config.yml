@@ -52,4 +52,5 @@ log_param:
   submission_name: submission.csv
   mlflow: False
   calc_cv: True
+  make_cmx: True
   make_submission: True

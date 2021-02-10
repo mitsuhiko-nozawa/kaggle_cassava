@@ -47,10 +47,14 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
   
+  do_cutmix: False
+  do_fmix: False
+  reduce_transforms: False
 
 
 log_param:
   submission_name: submission.csv
   mlflow: False
   calc_cv: True
+  make_cmx: True
   make_submission: True

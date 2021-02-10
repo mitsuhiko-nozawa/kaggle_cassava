@@ -1,5 +1,5 @@
 exp_param: 
-  description: EfficientNet BiTemperedLogisticLoss cutmix
+  description: EfficientNet BiTemperedLogisticLoss cutmix, light aug + cutout
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -64,6 +64,7 @@ train_param:
 
   do_cutmix: True
   do_fmix: False
+  reduce_transforms: False
   
 
 
@@ -71,4 +72,5 @@ log_param:
   submission_name: submission.csv
   mlflow: False
   calc_cv: True
+  make_cmx: True
   make_submission: True

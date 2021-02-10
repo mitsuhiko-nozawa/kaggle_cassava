@@ -15,7 +15,7 @@ class Logging(BaseManager):
         if self.get("log_flag"):
             if self.get("calc_cv") and not self.debug: self.cv_score, self.cv_scores = self.calc_cv()
             if self.get("make_submission"): self.make_submission()
-            self.make_confusion_matrix()
+            if self.get("make_cmx"): self.make_confusion_matrix()
             if self.get("mlflow"):
                 import mlflow
                 mlflow.set_tracking_uri(osp.join(self.ROOT, "src",  "mlflow", "mlruns"))

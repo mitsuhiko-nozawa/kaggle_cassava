@@ -1,5 +1,5 @@
 exp_param: 
-  description: EfficientNet BiTemperedLogisticLoss accuracy metrics
+  description: EfficientNet BiTemperedLogisticLoss accuracy metrics, reduce aug, fmix, cutmix
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -12,7 +12,7 @@ exp_param:
   log_flag: True
 
   cv: StratifiedKFold
-  recreate_cv: True
+  recreate_cv: False
   n_splits: 5
   output_size: 5
   seeds: [3]
@@ -30,12 +30,12 @@ train_param:
     - Transpose
     - HorizontalFlip
     - VerticalFlip
-    #- ShiftScaleRotate
+    - ShiftScaleRotate
     #- HueSaturationValue
     #- RandomBrightnessContrast
     - Normalize
     #- CoarseDropout
-    - Cutout
+    #- Cutout
     - ToTensorV2
 
   tr_transform_params:
@@ -62,8 +62,8 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
 
-  do_cutmix: False
-  do_fmix: False
+  do_cutmix: True
+  do_fmix: True
   reduce_transforms: True
   
 
@@ -72,4 +72,5 @@ log_param:
   submission_name: submission.csv
   mlflow: False
   calc_cv: True
+  make_cmx: True
   make_submission: True
