@@ -25,6 +25,7 @@ for filepath in $files; do
         exp_param.infer_flag=False \
         exp_param.log_flag=True \
         log_param.mlflow=True \
+        log_param.make_submission=False \
         hydra.run.dir=. hydra.output_subdir=null hydra/job_logging=disabled hydra/hydra_logging=disabled
         cd $pwd
     fi

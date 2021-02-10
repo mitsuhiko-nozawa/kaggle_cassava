@@ -1,0 +1,75 @@
+exp_param: 
+  description: EfficientNet BiTemperedLogisticLoss accuracy metrics
+  WORK_DIR: None # */exp_000
+  ROOT: None # */src
+  exp_name: None # work dir name
+  raw_dirname: cassava-leaf-disease-classification
+  env: aic
+  
+  debug: False
+  train_flag: True
+  infer_flag: True
+  log_flag: True
+
+  cv: StratifiedKFold
+  recreate_cv: True
+  n_splits: 5
+  output_size: 5
+  seeds: [3]
+  run_folds: [0, 1, 2, 3, 4]
+
+train_param: 
+  model: EfficientNet
+  batch_size: 16
+  num_workers: 1
+  device: cuda:5
+  accum_iter: 2
+  tr_transforms:
+    #- Resize(params["size"], params["size"])
+    - RandomResizedCrop
+    - Transpose
+    - HorizontalFlip
+    - VerticalFlip
+    #- ShiftScaleRotate
+    #- HueSaturationValue
+    #- RandomBrightnessContrast
+    - Normalize
+    #- CoarseDropout
+    - Cutout
+    - ToTensorV2
+
+  tr_transform_params:
+    size: 512
+  val_transform_params:
+    size: 512
+
+  epochs: 20
+  early_stopping_steps: 3
+  verbose: 1
+  loss_tr: BiTemperedLogisticLoss
+  loss_fn: BiTemperedLogisticLoss
+
+  scheduler: CosineAnnealingWarmRestarts
+  scheduler_params:
+    T_0: 10
+    T_mult: 1
+    eta_min: 0.000001
+    last_epoch: -1
+    
+  optimizer: Adam
+  optimizer_params:
+    lr: 0.0001
+    weight_decay: 0.000001
+    amsgrad: False
+
+  do_cutmix: False
+  do_fmix: False
+  reduce_transforms: True
+  
+
+
+log_param:
+  submission_name: submission.csv
+  mlflow: False
+  calc_cv: True
+  make_submission: True

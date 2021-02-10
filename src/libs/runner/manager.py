@@ -23,6 +23,7 @@ class BaseManager(metaclass=ABCMeta):
         self.n_splits = params["n_splits"]
         self.device = params["device"]
         self.model = params["model"]
+        self.classes = ["CBB", "CBSD", "CGM", "CMD", "Healthy"]
 
         self.env = params["env"]
         if self.env == "kaggle":

@@ -2,6 +2,7 @@ import cv2
 import torch
 from torch.utils.data import DataLoader, Dataset
 import os.path as osp
+from .transforms import get_transforms
 
 class TrainDataset(Dataset):
     def __init__(self, df, data_path, transform=None):
@@ -10,6 +11,7 @@ class TrainDataset(Dataset):
         self.labels = df['label'].values
         self.transform = transform
         self.data_path = data_path
+        self.image_size = 512
         
     def __len__(self):
         return len(self.df)
@@ -24,7 +26,9 @@ class TrainDataset(Dataset):
             image = augmented['image']
         label = torch.tensor(self.labels[idx]).long()
         return image, label
-    
+    def change_transforms(self):
+        print("change transforms")
+        self.transforms = get_transforms(phase="valid", params={"size": self.image_size})
 
 class TestDataset(Dataset):
     def __init__(self, df, data_path, transform=None):

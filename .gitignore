@@ -24,3 +24,4 @@ src/features/test/*
 **/*.pt
 **/nohup.out
 **/*.json
+**/*.png

@@ -11,10 +11,11 @@ from torch.cuda.amp import autocast, GradScaler
 
 from .criterions import *
 from .mixup import *
+from sklearn.metrics import accuracy_score
 
 
 def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_params, scheduler, \
-    scheduler_params, loss_tr, loss_fn, early_stopping_steps, verbose, device, seed, fold, weight_path, do_cutmix, do_fmix):
+    scheduler_params, loss_tr, loss_fn, early_stopping_steps, verbose, device, seed, fold, weight_path, do_cutmix, do_fmix, reduce_transforms):
 
     loss_tr = eval(loss_tr)()
     loss_fn = eval(loss_fn)()
@@ -23,13 +24,14 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
 
     early_step = 0
     best_loss = np.inf
+    best_acc = 0
     best_epoch = 0
     best_val_preds = -1
     scaler = GradScaler() ## 
     start = time.time()
     for epoch in range(epochs):
         train_loss = train_fn(model, optimizer, scheduler, loss_fn, trainloader, device, scaler, epoch, do_cutmix, do_fmix)
-        valid_loss, val_preds = valid_fn(model, loss_fn, validloader, device, epoch)
+        valid_loss, val_preds, valid_acc = valid_fn(model, loss_fn, validloader, device, epoch)
 
         # scheduler step
         if isinstance(scheduler, ReduceLROnPlateau):
@@ -39,8 +41,10 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
         elif isinstance(scheduler, CosineAnnealingWarmRestarts):
             scheduler.step()
                 
-        if valid_loss < best_loss:
+        # if valid_loss < best_loss:
+        if best_acc < valid_acc:
             best_loss = valid_loss
+            best_acc = valid_acc
             best_val_preds = val_preds
             torch.save(model.state_dict(), osp.join( weight_path,  f"{seed}_{fold}.pt") )
             early_step = 0
@@ -50,11 +54,16 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
             early_step += 1
             if (early_step >= early_stopping_steps):
                 t = time.time() - start
-                print(f"early stopping in iteration {epoch},  : best itaration is {best_epoch}, valid loss is {best_loss}, time: {t}")
+                print(f"early stopping in iteration {epoch},  : best itaration is {best_epoch} | valid loss {best_loss:.4f} | valid acc {best_acc:.4f}time: {t:.4f}")
                 return best_val_preds
 
+        # reduce transforms
+        if reduce_transforms:
+            if early_step > 0:
+                trainloader.dataset.change_transforms()
+
     t = time.time() - start       
-    print(f"training until max epoch {epochs},  : best itaration is {best_epoch}, valid loss is {best_loss}, time: {t}")
+    print(f"training until max epoch {epochs},  : best itaration is {best_epoch} | valid loss {best_loss:.4f} | valid acc {best_acc:.4f} time: {t:.4f}")
     return best_val_preds
 
 def train_fn(model, optimizer, scheduler, loss_fn, dataloader, device, scaler, epoch, do_cutmix, do_fmix):
@@ -109,6 +118,7 @@ def valid_fn(model, loss_fn, dataloader, device, epoch):
     model.eval()
     final_loss = 0
     valid_preds = []
+    valid_labels = []
     pbar = tqdm(enumerate(dataloader), total=len(dataloader))
     
     with torch.no_grad():
@@ -123,6 +133,7 @@ def valid_fn(model, loss_fn, dataloader, device, epoch):
             loss = loss_fn(outputs, labels)
             final_loss += loss.item()
             valid_preds.append(outputs.softmax(1).detach().cpu().numpy())
+            valid_labels.append(labels.detach().cpu().numpy())
             if i % 10 == 0 or (i+1) == len(dataloader): 
                 description = f"[valid] epoch {epoch} | iteration {i} | time {time.time() - s:.4f} | avg loss {final_loss / (i+1):.6f}"
                 pbar.set_description(description)
@@ -130,8 +141,10 @@ def valid_fn(model, loss_fn, dataloader, device, epoch):
         
     final_loss /= len(dataloader)
     valid_preds = np.concatenate(valid_preds)
+    valid_labels = np.concatenate(valid_labels)
+    valid_acc = accuracy_score(valid_labels.argmax(axis=1), valid_preds.argmax(axis=1))
     
-    return final_loss, valid_preds
+    return final_loss, valid_preds, valid_acc
 
 
 def inference_fn(model, dataloader, device):

@@ -2,8 +2,11 @@ import numpy as np
 import pandas as pd
 import os
 import os.path as osp
-from sklearn.metrics import accuracy_score
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, confusion_matrix
 from .manager import BaseManager
+from utils import plot_confusion_matrix
 
 
 class Logging(BaseManager):
@@ -12,6 +15,7 @@ class Logging(BaseManager):
         if self.get("log_flag"):
             if self.get("calc_cv") and not self.debug: self.cv_score, self.cv_scores = self.calc_cv()
             if self.get("make_submission"): self.make_submission()
+            self.make_confusion_matrix()
             if self.get("mlflow"):
                 import mlflow
                 mlflow.set_tracking_uri(osp.join(self.ROOT, "src",  "mlflow", "mlruns"))
@@ -67,9 +71,18 @@ class Logging(BaseManager):
         test_df["label"] = np.argmax(preds.values, axis=1).copy()
         test_df.to_csv(osp.join(self.sub_path, self.get("submission_name")), index=False)
 
+    def make_confusion_matrix(self):
+        y_true = pd.read_csv(osp.join(self.ROOT, "input", self.raw_dirname, "train.csv"))["label"].values
+        y_pred = pd.read_csv(osp.join(self.val_preds_path, "oof_preds.csv"))["pred"].values
+        cmx = confusion_matrix(y_true, y_pred)
+        plot_confusion_matrix(cm=cmx, classes=self.classes, save_path=self.WORK_DIR)
+
+
+
 
 
     def create_mlflow(self):
+        import mlflow
         with mlflow.start_run(run_name=self.get("exp_name")):
             mlflow.log_param("description", self.get("description"))
             mlflow.log_param("model", self.get("model"))
@@ -78,11 +91,8 @@ class Logging(BaseManager):
             mlflow.log_param("image size", self.get("tr_transform_params")["size"])
             mlflow.log_param("seeds", self.get("seeds"))
 
-            #try:
-            #    mlflow.log_artifact(self.feature_importances_fname)
-            #except:
-            #    pass
-            #mlflow.log_artifact(self.submission_fname)
+            try: mlflow.log_artifact(osp.join(self.WORK_DIR, "confusion_matrix.png"))
+            except: pass
 
 
     
