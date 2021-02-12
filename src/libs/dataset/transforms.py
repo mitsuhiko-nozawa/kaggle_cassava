@@ -7,6 +7,16 @@ from albumentations import (
 from albumentations.pytorch import ToTensorV2
 from albumentations import ImageOnlyTransform
 
+def get_resize_transforms():
+    return Compose([
+            Resize(512, 512),
+            Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225],
+            ),
+            ToTensorV2(),
+        ])
+
 
 
 def get_transforms(phase, params, transforms=None):    
@@ -14,6 +24,7 @@ def get_transforms(phase, params, transforms=None):
         return Compose([ get_aug(aug, params) for aug in transforms])
 
     elif phase in ['valid', 'test']:
+        
         return Compose([
             CenterCrop(params["size"], params["size"], p=1.), #
             Resize(params["size"], params["size"]),

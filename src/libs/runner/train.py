@@ -42,6 +42,8 @@ class Train(BaseManager):
         self.params["pretrained"] = True
         
         model = CassavaClassifierModel(self.params)
+        if self.get("do_retrain"):
+            model.read_weight()
         model.fit(trainloader, validloader)
 
         # valid predict

@@ -91,7 +91,7 @@ class FocalCosineLoss(nn.Module):
 
 
 class BiTemperedLogisticLoss(nn.Module): 
-    def __init__(self, t1=0.3, t2=1.0, smoothing=0.0): 
+    def __init__(self, t1=0.3, t2=1.0, smoothing=0.05): 
         super(BiTemperedLogisticLoss, self).__init__() 
         self.t1 = t1
         self.t2 = t2

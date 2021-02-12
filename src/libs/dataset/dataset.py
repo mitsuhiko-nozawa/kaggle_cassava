@@ -2,7 +2,7 @@ import cv2
 import torch
 from torch.utils.data import DataLoader, Dataset
 import os.path as osp
-from .transforms import get_transforms
+from .transforms import get_transforms, get_resize_transforms
 
 class TrainDataset(Dataset):
     def __init__(self, df, data_path, transform=None):
@@ -12,6 +12,8 @@ class TrainDataset(Dataset):
         self.transform = transform
         self.data_path = data_path
         self.image_size = 512
+        self.resize_transforms = get_resize_transforms()
+        self.len_transforms = len([1 for t in self.transform])
         
     def __len__(self):
         return len(self.df)
@@ -22,7 +24,10 @@ class TrainDataset(Dataset):
         image = cv2.imread(file_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         if self.transform:
-            augmented = self.transform(image=image)
+            if self.len_transforms <= 5 and image.shape[0] < 512 or image.shape[1] < 512:
+                augmented = self.resize_transforms(image=image)
+            else:
+                augmented = self.transform(image=image)
             image = augmented['image']
         label = torch.tensor(self.labels[idx]).long()
         return image, label

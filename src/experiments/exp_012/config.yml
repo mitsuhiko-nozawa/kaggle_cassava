@@ -1,5 +1,5 @@
 exp_param: 
-  description: EfficientNet BiTemperedLogisticLoss accuracy metrics, reduce aug, fmix, cutmix
+  description: EfficientNet BiTemperedLogisticLoss accuracy metrics, mixup
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -15,14 +15,14 @@ exp_param:
   recreate_cv: True
   n_splits: 5
   output_size: 5
-  seeds: [10]
+  seeds: [12]
   run_folds: [0, 1, 2, 3, 4]
 
 train_param: 
-  model: EfficientNet
+  model: efficientnet_b4
   batch_size: 16
   num_workers: 1
-  device: cuda:5
+  device: cuda:2
   accum_iter: 2
   tr_transforms:
     #- Resize(params["size"], params["size"])
@@ -31,8 +31,8 @@ train_param:
     - HorizontalFlip
     - VerticalFlip
     - ShiftScaleRotate
-    #- HueSaturationValue
-    #- RandomBrightnessContrast
+    - HueSaturationValue
+    - RandomBrightnessContrast
     - Normalize
     #- CoarseDropout
     #- Cutout
@@ -62,10 +62,11 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
 
-  do_cutmix: True
-  do_fmix: True
+  do_cutmix: False
+  do_fmix: False
   do_mixup: True
   reduce_transforms: False
+
   do_retrain: False
   start_epoch: 10
   

@@ -3,6 +3,21 @@ import random
 import numpy as np
 from scipy.stats import beta
 import torch
+
+def mixup(data, target, alpha):
+    indices = torch.randperm(data.size(0))
+    shuffled_data = data[indices]
+    shuffled_target = target[indices]
+
+    lam = np.clip(np.random.beta(alpha, alpha),0.3,0.4)
+    #lam = np.random.beta(alpha, alpha)
+    new_data = (lam*data.clone() + (1-lam)+shuffled_data.clone())
+
+    eyes = torch.eye(5)
+    targets = eyes[target] * lam + eyes[shuffled_target] * (1-lam)
+
+    return new_data, targets
+    
 def rand_bbox(size, lam):
     W = size[2]
     H = size[3]

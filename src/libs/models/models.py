@@ -27,6 +27,7 @@ class CassavaClassifierModel(BaseModel):
             weight_path=self.weight_path,
             do_cutmix=self.params["do_cutmix"],
             do_fmix=self.params["do_fmix"],
+            do_mixup=self.params["do_mixup"],
             reduce_transforms=self.params["reduce_transforms"]
         )
         

@@ -8,7 +8,7 @@ exp_param:
   
   debug: False
   train_flag: False
-  infer_flag: False
+  infer_flag: True
   log_flag: True
 
   cv: StratifiedKFold
@@ -24,6 +24,19 @@ train_param:
   num_workers: 1
   device: cuda:1
   accum_iter: 2
+  tr_transforms:
+    #- Resize(params["size"], params["size"])
+    - RandomResizedCrop
+    - Transpose
+    - HorizontalFlip
+    - VerticalFlip
+    - ShiftScaleRotate
+    #- HueSaturationValue
+    #- RandomBrightnessContrast
+    - Normalize
+    #- CoarseDropout
+    #- Cutout
+    - ToTensorV2
   
   tr_transform_params:
     size: 512
@@ -33,6 +46,8 @@ train_param:
   epochs: 20
   early_stopping_steps: 2
   verbose: 1
+  loss_tr: BiTemperedLogisticLoss
+  loss_fn: BiTemperedLogisticLoss
 
   scheduler: CosineAnnealingWarmRestarts
   scheduler_params:
@@ -49,7 +64,10 @@ train_param:
   
   do_cutmix: False
   do_fmix: False
+  do_mixup: True
   reduce_transforms: False
+  do_retrain: False
+  start_epoch: 10
 
 
 log_param:

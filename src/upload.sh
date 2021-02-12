@@ -1,0 +1,1 @@
+cd ~/kaggle/kaggle_cassava/src && kaggle datasets version -p . -m "Updated data" -r tar
