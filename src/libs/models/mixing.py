@@ -11,7 +11,7 @@ def mixup(data, target, alpha):
 
     lam = np.clip(np.random.beta(alpha, alpha),0.3,0.4)
     #lam = np.random.beta(alpha, alpha)
-    new_data = (lam*data.clone() + (1-lam)+shuffled_data.clone())
+    new_data = (lam*data.clone() + (1-lam)*shuffled_data.clone())
 
     eyes = torch.eye(5)
     targets = eyes[target] * lam + eyes[shuffled_target] * (1-lam)

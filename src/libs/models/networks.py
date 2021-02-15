@@ -119,3 +119,28 @@ class efficientnet_b7(nn.Module):
 #    def forward(self, x):
 #        x = self.model(x)
 #        return x 
+
+class enet_v2(nn.Module):
+
+    def __init__(self, model_name=None, pretrained=False, out_size=5):
+        super(enet_v2, self).__init__()
+        self.enet = timm.create_model("tf_efficientnet_b4_ns", pretrained=pretrained)
+        in_ch = self.enet.classifier.in_features
+        self.myfc = nn.Linear(in_ch, out_size)
+        self.enet.classifier = nn.Identity()
+
+    def forward(self, x):
+        x = self.enet(x)
+        x = self.myfc(x)
+        return x
+
+class CustomResNext(nn.Module):
+    def __init__(self, model_name='resnext50_32x4d', pretrained=False, out_size=5):
+        super().__init__()
+        self.model = timm.create_model(model_name, pretrained=pretrained)
+        n_features = self.model.fc.in_features
+        self.model.fc = nn.Linear(n_features, out_size)
+
+    def forward(self, x):
+        x = self.model(x)
+        return x

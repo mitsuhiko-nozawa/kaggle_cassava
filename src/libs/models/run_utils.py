@@ -115,7 +115,7 @@ def train_fn(model, optimizer, scheduler, loss_fn, dataloader, device, scaler, e
             scaler.step(optimizer)
             scaler.update()
             optimizer.zero_grad() 
-        if i % 50 == 0 or (i+1) == len(dataloader): 
+        if i % 10 == 0 or (i+1) == len(dataloader): 
             description = f"[train] epoch {epoch} | iteration {i} | time {time.time() - s:.4f} | avg loss {final_loss / (i+1):.6f}"
             pbar.set_description(description)
         torch.cuda.empty_cache()

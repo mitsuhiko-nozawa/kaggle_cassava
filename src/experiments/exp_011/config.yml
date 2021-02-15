@@ -16,7 +16,7 @@ exp_param:
   n_splits: 5
   output_size: 5
   seeds: [111]
-  run_folds: [0, 1, 2, 3, 4]
+  run_folds: [0]
 
 train_param: 
   model: efficientnet_b4
@@ -34,8 +34,8 @@ train_param:
     - HueSaturationValue
     - RandomBrightnessContrast
     - Normalize
-    #- CoarseDropout
-    #- Cutout
+    - CoarseDropout
+    - Cutout
     - ToTensorV2
 
   tr_transform_params:
@@ -43,7 +43,7 @@ train_param:
   val_transform_params:
     size: 512
 
-  epochs: 10
+  epochs: 50
   early_stopping_steps: 3
   verbose: 1
   loss_tr: BiTemperedLogisticLoss
@@ -64,10 +64,10 @@ train_param:
 
   do_cutmix: False
   do_fmix: False
-  do_mixup: True
+  do_mixup: False
   reduce_transforms: False
 
-  do_retrain: False
+  do_retrain: True
   start_epoch: 10
   
 

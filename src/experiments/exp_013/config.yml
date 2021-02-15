@@ -34,8 +34,8 @@ train_param:
     - HueSaturationValue
     - RandomBrightnessContrast
     - Normalize
-    #- CoarseDropout
-    #- Cutout
+    - CoarseDropout
+    - Cutout
     - ToTensorV2
 
   tr_transform_params:
@@ -62,8 +62,8 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
 
-  do_cutmix: True
-  do_fmix: True
+  do_cutmix: False
+  do_fmix: False
   do_mixup: False
   reduce_transforms: False
 

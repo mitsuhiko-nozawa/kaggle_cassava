@@ -34,6 +34,9 @@ class Train(BaseManager):
             train_df = train_df[:self.get("batch_size")+1]
             val_df = val_df[:self.get("batch_size")+1]
             self.params["epochs"] = 1
+        if self.raw_dirname == "cassava-leaf-disease-classification-merged":
+            val_df = val_df[val_df["source"] == 2021]
+
         train_dataset = TrainDataset(train_df, self.data_path, get_transforms('train', self.get("tr_transform_params"), self.get("tr_transforms")))
         val_dataset = TrainDataset(val_df, self.data_path, get_transforms('valid', self.get("val_transform_params")))
         trainloader, validloader = get_dataloader(train_dataset, val_dataset, self.get("batch_size"), self.get("num_workers"))

@@ -37,7 +37,12 @@ class CassavaClassifierModel(BaseModel):
 
     def read_weight(self):
         fname = f"{self.seed}_{self.fold}.pt"
-        self.model.load_state_dict(torch.load( osp.join(self.weight_path, fname) , map_location=self.device), self.device)
+        try:
+            self.model.load_state_dict(torch.load( osp.join(self.weight_path, fname) , map_location=self.device), self.device)
+        except:
+            state_dict = torch.load(osp.join(self.weight_path, fname) , map_location=self.device)['model']
+            state_dict = {k[7:] if k.startswith('module.') else k: state_dict[k] for k in state_dict.keys()}
+            self.model.load_state_dict(state_dict, self.device)
 
     def save_weight(self):
         pass

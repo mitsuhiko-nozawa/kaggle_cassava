@@ -26,7 +26,7 @@ def get_transforms(phase, params, transforms=None):
     elif phase in ['valid', 'test']:
         
         return Compose([
-            CenterCrop(params["size"], params["size"], p=1.), #
+            #CenterCrop(params["size"], params["size"], p=1.), #
             Resize(params["size"], params["size"]),
             Normalize(
                 mean=[0.485, 0.456, 0.406],

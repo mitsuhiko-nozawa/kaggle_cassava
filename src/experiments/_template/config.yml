@@ -64,6 +64,7 @@ train_param:
 
   do_cutmix: False
   do_fmix: False
+  do_mixup: False
   reduce_transforms: False
   do_retrain: False
   start_epoch: 10

@@ -1,5 +1,5 @@
 exp_param: 
-  description: EfficientNet BiTemperedLogisticLoss accuracy metrics, reduce aug, fmix, cutmix
+  description: class weighted loss, beta=0.999
   WORK_DIR: None # */exp_000
   ROOT: None # */src
   exp_name: None # work dir name
@@ -15,14 +15,14 @@ exp_param:
   recreate_cv: True
   n_splits: 5
   output_size: 5
-  seeds: [10]
+  seeds: [16]
   run_folds: [0, 1, 2, 3, 4]
 
 train_param: 
   model: EfficientNet
   batch_size: 16
   num_workers: 1
-  device: cuda:5
+  device: cuda:6
   accum_iter: 2
   tr_transforms:
     #- Resize(params["size"], params["size"])
@@ -34,8 +34,8 @@ train_param:
     #- HueSaturationValue
     #- RandomBrightnessContrast
     - Normalize
-    #- CoarseDropout
-    #- Cutout
+    - CoarseDropout
+    - Cutout
     - ToTensorV2
 
   tr_transform_params:
@@ -43,11 +43,11 @@ train_param:
   val_transform_params:
     size: 512
 
-  epochs: 10
+  epochs: 20
   early_stopping_steps: 3
   verbose: 1
-  loss_tr: BiTemperedLogisticLoss
-  loss_fn: BiTemperedLogisticLoss
+  loss_tr: ClassBalancedWeightedLoss
+  loss_fn: ClassBalancedWeightedLoss
 
   scheduler: CosineAnnealingWarmRestarts
   scheduler_params:
@@ -62,8 +62,8 @@ train_param:
     weight_decay: 0.000001
     amsgrad: False
 
-  do_cutmix: True
-  do_fmix: True
+  do_cutmix: False
+  do_fmix: False
   do_mixup: False
   reduce_transforms: False
   do_retrain: False
