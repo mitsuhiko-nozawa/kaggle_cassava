@@ -31,7 +31,7 @@ def run_training(model, trainloader, validloader, epochs, optimizer, optimizer_p
     start = time.time()
 
     for epoch in range(epochs):
-        train_loss = train_fn(model, optimizer, scheduler, loss_fn, trainloader, device, scaler, epoch, do_cutmix, do_fmix, do_mixup)
+        #train_loss = train_fn(model, optimizer, scheduler, loss_fn, trainloader, device, scaler, epoch, do_cutmix, do_fmix, do_mixup)
         valid_loss, val_preds, valid_acc = valid_fn(model, loss_fn, validloader, device, epoch)
 
         # scheduler step
